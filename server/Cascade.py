@@ -31,3 +31,4 @@ class CascadeServer:
 					conn.send("200 OK Proceed to file upload")
 					file_length = data.split(' ')[2]
 					torrent = conn.recv(file_length)
+					conn.send("200 OK File uploaded")
