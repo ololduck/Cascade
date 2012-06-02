@@ -13,3 +13,20 @@ We have to be able to:
 +===========+=============================+
 | PUT file  | sends torrent file          |
 +-----------+-----------------------------+
+
+
+
+PUT
+~~~
+
+sent::
+
+   PUT "/path/to/file.torrent" size_in_bit
+
+resp::
+
+   200 OK Proceed to file upload
+
+sent::
+
+   <FULL FILE>
