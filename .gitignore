@@ -1,2 +1,23 @@
 # sublime
 *.sublime-workspace
+
+# Android / Eclipse
+
+# binaries
+*.apk
+*.ap_
+
+# VM files
+*.dex
+
+# java classes
+*.class
+
+# generated files
+clients/Android/bin/
+clients/Android/gen/
+
+# eclipse prefs
+*.properties
+.project
+.classpath
