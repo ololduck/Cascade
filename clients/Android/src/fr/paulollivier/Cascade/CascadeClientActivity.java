@@ -3,9 +3,11 @@ package fr.paulollivier.Cascade;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,10 +22,17 @@ public class CascadeClientActivity extends Activity {
         savebutton.setOnClickListener(new OnClickListener(){
         	public void onClick(View v){
         		// save preferences
+        		Log.d("Preferences", "Getting shared prefs");
         		SharedPreferences sharedpref = getSharedPreferences("Cascade", Activity.MODE_PRIVATE);
+        		Log.d("Preferences", "Getting editor...");
         		SharedPreferences.Editor editor = sharedpref.edit();
-        		editor.putString("serv_addr", (String) ((TextView) findViewById(R.id.et_serv_addr)).getText());
+        		Log.d("Preferences", "Setting serv_addr...");
+        		EditText et = (EditText) findViewById(R.id.et_serv_addr);
+        		editor.putString("serv_addr", et.getText().toString());
+        		et = null;
+        		Log.d("Preferences", "Commiting..");
         		editor.commit();
+        		Log.d("Preferences", "DONE");
         		Toast.makeText(getBaseContext(), R.string.saved_preferences_popup, Toast.LENGTH_LONG).show();
         	}
         });
