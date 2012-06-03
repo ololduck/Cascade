@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, CascadeClientActivity!</string>
+    <string name="app_name">Cascade Client</string>
+    <string name="mainlayout_title">Cascade Preferences</string>
+    <string name="mainlayout_address">Enter the Cascade server address</string>
+    <string name="mainlayout_explications">Cascade client for Android works only by built-in Android \"Share\" feature. Select a torrent file, and \"Share\" it to Cascade Client.</string>
+
+</resources>
