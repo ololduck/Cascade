@@ -6,5 +6,7 @@
     <string name="mainlayout_title">Cascade Preferences</string>
     <string name="mainlayout_address">Enter the Cascade server address</string>
     <string name="mainlayout_explications">Cascade client for Android works only by built-in Android \"Share\" feature. Select a torrent file, and \"Share\" it to Cascade Client.</string>
+    <string name="mainlayout_savebutton">Save preferences</string>
+    <string name="saved_preferences_popup">Saved preferences</string>
 
 </resources>
