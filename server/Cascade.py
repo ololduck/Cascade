@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import socket
-
+import os
+import logging as log # will be used
 
 
 class CascadeServer:
@@ -29,6 +30,23 @@ class CascadeServer:
 					break
 				if data[0:2] == "PUT":
 					conn.send("200 OK Proceed to file upload")
-					file_length = data.split(' ')[2]
+					_ , file_name, file_length = data.split(' ')
 					torrent = conn.recv(file_length)
 					conn.send("200 OK File uploaded")
+
+					if not os.path.exists(os.path.abspath()+"/torrents"):
+						os.makedirs(os.path.abspath()+"/torrents")
+
+					with open(os.path.abspath()+"/torrents/"+file_name, 'wb') as f:
+						f.write(torrent)
+						
+			conn.close()
+						
+
+if __name__ == '__main__':
+	try:
+		CascadeServer(22222).serve_forever()
+	except KeyboardInterrupt:
+		print "Stopping..."
+		print "OK"
+	
