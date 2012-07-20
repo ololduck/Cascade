@@ -2,8 +2,6 @@ package fr.paulollivier.Cascade;
 
 import java.net.Socket;
 import java.util.Iterator;
-import java.util.Set;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -23,7 +21,7 @@ public class SendTorrentActivity extends Activity {
         String server = sharedpref.getString("serv_addr", "None");
         Log.d("Preferences", "Server address: " + server);
 		Intent intent = getIntent();
-		while(savedInstanceState.keySet().iterator().hasNext())
+		while(intent.getExtras().keySet().iterator().hasNext())
 			Log.d("Bundle", savedInstanceState.keySet().iterator().next());
 		
 		Log.d("Intent", "Getting all keys");
