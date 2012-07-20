@@ -23,6 +23,7 @@
 # FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
 # DEALINGS IN THE SOFTWARE.
 
+import socket as socket
 import logging as log
 
 
@@ -33,11 +34,21 @@ class FileToSend:
         self.filepath = filepath
         self.server_addr = serv_addr.split(':')
         log.debug("serv_addr: %s port: %s" % self.server_addr)
+        with open(self.filepath, 'r') as f:
+            self.file_data = f.readlines()
+        self.send()
 
     def send(self):
         # here send the file. Must include all work done between server
         # and client.
-        pass
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.connect(self.server_addr)
+        self.s.sendall("PUT %s %s" % (self.filepath, str(self.file_data.size())
+        log.debug("recieved: %s" % self.s.recv(1024))
+        self.s.sendall(self.file_data)
+        log.debug("recieved: %s" % self.s.recv(1024))
+
+
 
 if __name__ == '__main__':
     pass
