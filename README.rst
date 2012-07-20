@@ -1,3 +1,4 @@
+=======
 Cascade
 =======
 
@@ -11,7 +12,6 @@ This is a solution I found.
 Organisation
 ~~~~~~~~~~~~
 
- * Server app - Running on the "downloader" computer
+ * Server app - Running on the "downloader" computer  /!\ must have ``btpd`` installed
  * Android app - to send files on the go
- * Desktop/laptop app - to send files easely (not to log into ssh, ftp, etc...)
-
+ * Desktop/laptop app - to send files easely (not having to log into ssh, ftp, etc...)

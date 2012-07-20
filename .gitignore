@@ -1,7 +1,7 @@
 # sublime
 *.sublime-workspace
 
-# Android / Eclipse
+## Android / Eclipse
 
 # binaries
 *.apk
