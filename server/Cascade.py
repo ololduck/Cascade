@@ -26,76 +26,74 @@
 import socket
 import os
 import subprocess
-import logging as log # will be used
+import logging as log
 
 log.basicConfig(filename="CascadeServer.log", level=log.DEBUG)
 
+
 class CascadeServer:
-	"""Main Cascade Server class. Handles the file upload, and adding it to btcli"""
-	def __init__(self, port):
-		log.debug("Initializing CascadeServer...")
-		self.port = port
-		self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		log.info("Server initialized, on port %s"%(self.port))
+    """Main Cascade Server class. Handles the file upload, and adding it to btcli"""
+    def __init__(self, port):
+        log.debug("Initializing CascadeServer...")
+        self.port = port
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        log.info("Server initialized, on port %s" % (self.port))
 
-	def serve_forever(self):
-		"""Launches the server: SERVE FOREVER"""
-		log.debug("Asked to serve forever")
-		self.configure()
-		self.mainloop()
+    def serve_forever(self):
+        """Launches the server: SERVE FOREVER"""
+        log.debug("Asked to serve forever")
+        self.configure()
+        self.mainloop()
 
-	def configure(self):
-		log.debug("Entering configuration")
-		log.debug("Binding...")
-		self.s.bind(('',self.port))
-		self.s.listen(1)
-		log.info("Successfully bound to port %s"%(self.port))
+    def configure(self):
+        log.debug("Entering configuration")
+        log.debug("Binding...")
+        self.s.bind(('', self.port))
+        self.s.listen(1)
+        log.info("Successfully bound to port %s" % (self.port))
 
-	def mainloop(self):
-		log.debug("Entering mainloop")
-		while True:
-			# client receptionning loop
-			conn, addr = self.s.accept()
-			Log.info("Client connected")
-			while True:
-				data = conn.recv(1024)
-				if not data:
-					log.debug("No data recieved, assuming client disconnected")
-					break
-				if data[0:2] == "PUT":
-					log.debug("Recieved put request")
-					conn.send("200 OK Proceed to file upload")
-					_, file_name, file_length = data.split(' ')
-					torrent = conn.recv(file_length)
-					log.debug("recieved file")
-					conn.send("200 OK File uploaded")
+    def send_to_btcli(self, file_to_add=""):
+        if(file_to_add != ""):
+            log.info("Adding file %s to btcli" % (file_to_add))
+            log.debug(subprocess.check_output(["btcli", "add", file_to_add]))
+        else:
+            log.error("no filename given to add to btcli!")
 
-					if not os.path.exists(os.path.abspath()+"/torrents"):
-						log.info("Torrent files directory not found, creating...")
-						os.makedirs(os.path.abspath()+"/torrents")
-						log.info("torrent directory successfully created")
+    def mainloop(self):
+        log.debug("Entering mainloop")
+        while True:
+            # client receptionning loop
+            conn, addr = self.s.accept()
+            log.info("Client connected")
+            while True:
+                data = conn.recv(1024)
+                if not data:
+                    log.debug("No data recieved, assuming client disconnected")
+                    break
+                if data[0:2] == "PUT":
+                    log.debug("Recieved put request")
+                    conn.send("200 OK Proceed to file upload")
+                    _, file_name, file_length = data.split(' ')
+                    torrent = conn.recv(file_length)
+                    log.debug("recieved file")
+                    conn.send("200 OK File uploaded")
 
-					with open(os.path.abspath()+"/torrents/"+file_name, 'wb') as f:
-						f.write(torrent)
-						log.debug("Successfully written torrent file")
+                    if not os.path.exists(os.path.abspath() + "/torrents"):
+                        log.info("Torrent files directory not found, creating...")
+                        os.makedirs(os.path.abspath() + "/torrents")
+                        log.info("torrent directory successfully created")
 
-					send_to_btcli(os.path.abspath()+"/torrents/"+file_name)
+                    with open(os.path.abspath() + "/torrents/" + file_name, 'wb') as f:
+                        f.write(torrent)
+                        log.debug("Successfully written torrent file")
 
-			conn.close()
+                    self.send_to_btcli(os.path.abspath() + "/torrents/" + file_name)
 
-	def send_to_btcli(self, file_to_add=""):
-		if(file_to_add != "")
-			# issue add command to btpd
-			# TODO: check for errors given by btpd
-			log.info("Adding file %s to btcli"%(file_to_add))
-			log.debug(subprocess.check_output(["btcli", "add", file_to_add ]))
-		else:
-			log.error("no filename given to add to btcli!")
-
+            conn.close()
 
 if __name__ == '__main__':
-	try:
-		CascadeServer(22222).serve_forever()
-	except KeyboardInterrupt:
-		print "Stopping..."
-		print "OK"
+    try:
+        CascadeServer(22222).serve_forever()
+    except KeyboardInterrupt:
+        print "Stopping..."
+        print "OK"
