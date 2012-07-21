@@ -71,24 +71,26 @@ class CascadeServer:
                 if not data:
                     log.debug("No data recieved, assuming client disconnected")
                     break
-                if data[0:2] == "PUT":
+                log.debug("data[0:3] : %s" % data[0:3])
+                if data[0:3] == "PUT":
                     log.debug("Recieved put request")
-                    conn.send("200 OK Proceed to file upload")
+                    conn.sendall("200 OK Proceed to file upload")
                     _, file_name, file_length = data.split(' ')
-                    torrent = conn.recv(file_length)
+                    log.debug("File info: name: %s size %s" % (file_name, file_length))
+                    torrent = conn.recv(int(file_length))
                     log.debug("recieved file")
                     conn.send("200 OK File uploaded")
 
-                    if not os.path.exists(os.path.abspath() + "/torrents"):
+                    if not os.path.exists(os.path.abspath(os.getcwd()) + "/torrents"):
                         log.info("Torrent files directory not found, creating...")
-                        os.makedirs(os.path.abspath() + "/torrents")
+                        os.makedirs(os.path.abspath(os.getcwd()) + "/torrents")
                         log.info("torrent directory successfully created")
 
-                    with open(os.path.abspath() + "/torrents/" + file_name, 'wb') as f:
+                    with open(os.path.abspath(os.getcwd()) + "/torrents/" + file_name, 'wb') as f:
                         f.write(torrent)
                         log.debug("Successfully written torrent file")
 
-                    self.send_to_btcli(os.path.abspath() + "/torrents/" + file_name)
+                    self.send_to_btcli(os.path.abspath(os.getcwd()) + "/torrents/" + file_name)
                 else:
                     log.warn("PUT not detected")
             conn.close()
