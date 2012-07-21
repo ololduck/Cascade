@@ -67,6 +67,7 @@ class CascadeServer:
             log.info("Client connected")
             while True:
                 data = conn.recv(1024)
+                log.debug("recvied: %s" % data)
                 if not data:
                     log.debug("No data recieved, assuming client disconnected")
                     break
@@ -88,7 +89,8 @@ class CascadeServer:
                         log.debug("Successfully written torrent file")
 
                     self.send_to_btcli(os.path.abspath() + "/torrents/" + file_name)
-
+                else:
+                    log.warn("PUT not detected")
             conn.close()
 
 if __name__ == '__main__':

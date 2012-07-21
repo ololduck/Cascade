@@ -1,6 +1,9 @@
 # sublime
 *.sublime-workspace
 
+# logs
+*.log
+
 ## Android / Eclipse
 
 # binaries

@@ -24,31 +24,48 @@
 # DEALINGS IN THE SOFTWARE.
 
 import socket as socket
+import sys
+import os
 import logging as log
+
+
+log.basicConfig(filename="sendfile.log", level=log.DEBUG)
 
 
 class FileToSend:
     """One instance per file to upload"""
 
     def __init__(self, filepath, serv_addr="localhost:22222"):
+        log.debug("Initializing new FileToSend")
         self.filepath = filepath
-        self.server_addr = serv_addr.split(':')
-        log.debug("serv_addr: %s port: %s" % self.server_addr)
-        with open(self.filepath, 'r') as f:
-            self.file_data = f.readlines()
+        self.server_addr = tuple(serv_addr.split(':'))
+        print self.server_addr
+        log.debug("serv_addr: %s port: %s" % tuple(self.server_addr))
+        with open(self.filepath, 'rb') as f:
+            self.file_data = f.read()
+            self.file_size = os.path.getsize(self.filepath)
         self.send()
 
     def send(self):
         # here send the file. Must include all work done between server
         # and client.
+        log.info("Begining file sending")
+        log.debug("Opening Socket...")
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.s.connect(self.server_addr)
-        self.s.sendall("PUT %s %s" % (self.filepath, str(self.file_data.size())
+        log.debug("Connecting...")
+        self.s.connect((self.server_addr[0], int(self.server_addr[1])))
+        log.debug("Sending message : %s" % "PUT %s %s" % (
+            self.filepath,
+            str(self.file_size)
+            ))
+        self.s.sendall("PUT %s %s" % (
+            self.filepath,
+            str(self.file_size)
+            ))
         log.debug("recieved: %s" % self.s.recv(1024))
         self.s.sendall(self.file_data)
         log.debug("recieved: %s" % self.s.recv(1024))
 
 
-
 if __name__ == '__main__':
-    pass
+    f = FileToSend(sys.argv[1])
