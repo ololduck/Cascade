@@ -76,6 +76,8 @@ class CascadeServer:
                     log.debug("Recieved put request")
                     conn.sendall("200 OK Proceed to file upload")
                     _, file_name, file_length = data.split(' ')
+
+                    file_name = file_name.split()[:0]
                     log.debug("File info: name: %s size %s" % (file_name, file_length))
                     torrent = conn.recv(int(file_length))
                     log.debug("recieved file")
